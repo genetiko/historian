@@ -133,3 +133,6 @@ dmypy.json
 
 # Ignore dynaconf secret files
 .secrets.*
+
+# Ignore poeetry .lock file
+poetry.lock
