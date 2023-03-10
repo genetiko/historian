@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from config import settings
+from historian.config import settings
 
 engine = create_engine(settings.db.driver, echo=True)
-Session = sessionmaker(bind=engine)
+SessionMaker = sessionmaker(bind=engine)
