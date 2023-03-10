@@ -1,9 +1,7 @@
-from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from routers import symbols, history
-
-load_dotenv()
+from historian.routers import history
+from historian.routers import symbols
 
 app = FastAPI()
 
