@@ -1,7 +1,7 @@
-import os
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
+from config import settings
+
+engine = create_engine(settings.db.driver, echo=True)
 Session = sessionmaker(bind=engine)
