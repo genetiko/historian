@@ -130,3 +130,6 @@ dmypy.json
 
 # Idea configuration files
 .idea/
+
+# Ignore dynaconf secret files
+.secrets.*

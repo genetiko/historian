@@ -3,3 +3,4 @@ alembic.ini
 LICENSE
 README.md
 venv
+.secrets.yaml
