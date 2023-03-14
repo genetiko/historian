@@ -1,12 +1,14 @@
-import os
 from logging.config import fileConfig
 
 from alembic import context
-from dotenv import load_dotenv
+from dynaconf import Dynaconf
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-load_dotenv()
+settings = Dynaconf(
+    envvar_prefix="HISTORIAN",
+    settings_files=['historian/settings.yaml', '.secrets.yaml'],
+)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -41,9 +43,8 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = os.getenv("DATABASE_URL")
     context.configure(
-        url=url,
+        url=settings.db.driver,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -64,6 +65,7 @@ def run_migrations_online() -> None:
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        url=settings.db.driver
     )
 
     with connectable.connect() as connection:
