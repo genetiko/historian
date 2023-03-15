@@ -6,7 +6,7 @@ Create Date: 2023-03-14 16:24:05.709434
 
 """
 from alembic import op
-from sqlalchemy import Integer, Float, BigInteger, Column, SmallInteger
+from sqlalchemy import Integer, Float, Column, SmallInteger, DateTime
 
 # revision identifiers, used by Alembic.
 revision = '7bd4f4fd49c6'
@@ -19,7 +19,7 @@ def upgrade() -> None:
     op.create_table(
         'mt5_rates',
         Column('id', Integer, primary_key=True),
-        Column('timestamp', BigInteger, nullable=False),
+        Column('timestamp', DateTime, nullable=False),
         Column('instrument_id', Integer, nullable=False),
         Column('period', SmallInteger, nullable=False),
         Column('open', Float, nullable=False),

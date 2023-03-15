@@ -6,7 +6,7 @@ Create Date: 2023-03-14 16:24:01.255536
 
 """
 from alembic import op
-from sqlalchemy import Float, Integer, BigInteger, Column, ForeignKey
+from sqlalchemy import Float, Integer, BigInteger, Column, ForeignKey, DateTime
 
 # revision identifiers, used by Alembic.
 revision = 'cf0aabc1ae7c'
@@ -20,7 +20,7 @@ def upgrade() -> None:
         'mt5_ticks',
         Column('id', Integer, primary_key=True),
         Column('instrument_id', Integer, ForeignKey("instruments.id"), nullable=False),
-        Column('timestamp', BigInteger, nullable=False),
+        Column('timestamp', DateTime, nullable=False),
         Column('bid', Float),
         Column('ask', Float)
         # Column('last', Float, nullable=False),

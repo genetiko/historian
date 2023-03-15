@@ -1,8 +1,6 @@
-from typing import List
-
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
-
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
+from datetime import datetime
 
 class Base(DeclarativeBase):
     pass
@@ -12,7 +10,7 @@ class Rate(Base):
     __tablename__ = "mt5_rates"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    timestamp: Mapped[int] = mapped_column()
+    timestamp: Mapped[datetime] = mapped_column()
     instrument_id: Mapped[int] = mapped_column(ForeignKey("instruments.id"))
     period: Mapped[int] = mapped_column()
     open: Mapped[float] = mapped_column()
@@ -46,9 +44,16 @@ class Tick(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     instrument_id: Mapped[int] = mapped_column(ForeignKey("instruments.id"))
-    timestamp: Mapped[int] = mapped_column()
+    timestamp: Mapped[datetime] = mapped_column()
     ask: Mapped[float] = mapped_column()
     bid: Mapped[float] = mapped_column()
     # last: Mapped[float] = mapped_column()
     # volume: Mapped[int] = mapped_column()
     # flags: Mapped[int] = mapped_column()
+
+
+class Source(Base):
+    __tablename__ = "sources"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column()
