@@ -8,6 +8,8 @@ Create Date: 2023-03-14 16:24:05.709434
 from alembic import op
 from sqlalchemy import Integer, Float, Column, SmallInteger, DateTime
 
+from historian import settings
+
 # revision identifiers, used by Alembic.
 revision = '7bd4f4fd49c6'
 down_revision = 'cf0aabc1ae7c'
@@ -27,7 +29,8 @@ def upgrade() -> None:
         Column('low', Float, nullable=False),
         Column('close', Float, nullable=False),
         Column('volume', Integer, nullable=False),
-        Column('spread', Integer, nullable=False)
+        Column('spread', Integer, nullable=False),
+        schema=settings.db.schema
     )
 
 

@@ -8,6 +8,8 @@ Create Date: 2023-03-14 16:23:54.330711
 from alembic import op
 from sqlalchemy import Column, SmallInteger, ForeignKey, String, Float, Boolean, UniqueConstraint
 
+from historian import settings
+
 # revision identifiers, used by Alembic.
 revision = '7acc051d3b05'
 down_revision = 'e73b59bd1ecb'
@@ -19,7 +21,7 @@ def upgrade() -> None:
     op.create_table(
         'instruments',
         Column('id', SmallInteger, primary_key=True),
-        Column('source_id', SmallInteger, ForeignKey('sources.id'), nullable=False),
+        Column('source_id', SmallInteger, ForeignKey('historian.sources.id'), nullable=False),
         Column('name', String(256), nullable=False),
         Column('path', String(256), nullable=False),
         Column('currency_base', String(32), nullable=False),
@@ -31,7 +33,8 @@ def upgrade() -> None:
         Column('volume_max', Float, nullable=False),
         Column('volume_step', Float, nullable=False),
         Column('spread_floating', Boolean, nullable=False),
-        UniqueConstraint('source_id', 'name', name='instrument')
+        UniqueConstraint('source_id', 'name', name='instrument'),
+        schema=settings.db.schema
     )
 
 

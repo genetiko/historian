@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Response, status
-from historian.storage import Tick, Rate, insert_mt5_ticks, insert_mt5_rates, get_mt5_rates, get_mt5_ticks
 
+from historian.storage import Tick, Rate, insert_mt5_ticks, insert_mt5_rates, get_mt5_rates, get_mt5_ticks, insert_job
 from .models import RateModel, TickModel
 
 router = APIRouter()
@@ -19,11 +19,10 @@ async def get_ticks_history(instrument_id, from_date: datetime, to_date: datetim
     return list(get_mt5_ticks(instrument_id, from_date, to_date))
 
 
-@router.post("/history/{instrument}/prepare", tags=["History"])
-async def prepare_data(symbol: str):
-    return {
-        "symbol": symbol
-    }
+@router.post("/history/{instrument_id}/prepare", tags=["History"])
+async def prepare_data(instrument_id: int, timeframe: str, from_date: datetime, to_date: datetime):
+    insert_job(instrument_id, timeframe, from_date, to_date)
+    return Response(status_code=status.HTTP_200_OK)
 
 
 @router.post("/ticks", tags=["Test data endpoints"])

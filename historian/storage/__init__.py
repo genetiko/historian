@@ -6,3 +6,4 @@ from .service import insert_mt5_ticks
 from .service import insert_mt5_rates
 from .service import get_mt5_rates
 from .service import get_mt5_ticks
+from .service import insert_job

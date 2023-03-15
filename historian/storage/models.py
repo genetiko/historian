@@ -1,9 +1,14 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from datetime import datetime
+from typing import List
+
+from sqlalchemy import ForeignKey, MetaData
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
+
+from historian import settings
+
 
 class Base(DeclarativeBase):
-    pass
+    metadata = MetaData(schema=settings.db.schema)
 
 
 class Rate(Base):
@@ -50,6 +55,29 @@ class Tick(Base):
     # last: Mapped[float] = mapped_column()
     # volume: Mapped[int] = mapped_column()
     # flags: Mapped[int] = mapped_column()
+
+
+class ImportJob(Base):
+    __tablename__ = "import_jobs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    chunks: Mapped[List["ImportJobChunk"]] = relationship("ImportJobChunk", back_populates="import_job")
+    instrument_id: Mapped[int] = mapped_column()
+    timeframe: Mapped[str] = mapped_column()
+    from_date: Mapped[datetime] = mapped_column()
+    to_date: Mapped[datetime] = mapped_column()
+    status: Mapped[str] = mapped_column()
+
+
+class ImportJobChunk(Base):
+    __tablename__ = "import_job_chunks"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    import_job_id: Mapped[int] = mapped_column(ForeignKey("import_jobs.id"))
+    import_job = relationship("ImportJob", back_populates="chunks")
+    from_date: Mapped[datetime] = mapped_column()
+    to_date: Mapped[datetime] = mapped_column()
+    status: Mapped[str] = mapped_column()
 
 
 class Source(Base):

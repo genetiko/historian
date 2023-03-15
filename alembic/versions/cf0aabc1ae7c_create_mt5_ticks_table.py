@@ -6,7 +6,9 @@ Create Date: 2023-03-14 16:24:01.255536
 
 """
 from alembic import op
-from sqlalchemy import Float, Integer, BigInteger, Column, ForeignKey, DateTime
+from sqlalchemy import Float, Integer, Column, ForeignKey, DateTime
+
+from historian import settings
 
 # revision identifiers, used by Alembic.
 revision = 'cf0aabc1ae7c'
@@ -19,10 +21,11 @@ def upgrade() -> None:
     op.create_table(
         'mt5_ticks',
         Column('id', Integer, primary_key=True),
-        Column('instrument_id', Integer, ForeignKey("instruments.id"), nullable=False),
+        Column('instrument_id', Integer, ForeignKey("historian.instruments.id"), nullable=False),
         Column('timestamp', DateTime, nullable=False),
         Column('bid', Float),
-        Column('ask', Float)
+        Column('ask', Float),
+        schema=settings.db.schema
         # Column('last', Float, nullable=False),
         # Column('volume', Integer, nullable=False),
         # Column('flags', Integer, nullable=False),
