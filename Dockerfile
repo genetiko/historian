@@ -53,7 +53,8 @@ RUN poetry install --only main
 # `final` image used for runtime
 FROM base as final
 COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
-COPY ./historian /historian/
 WORKDIR /historian
+COPY ./historian ./historian
+COPY settings.yaml ./
 EXPOSE 80
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "historian.main:app", "--host", "0.0.0.0", "--port", "80"]
