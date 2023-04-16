@@ -1,7 +1,9 @@
 import pandas as pd
+from sqlalchemy.dialects.postgresql import insert
 
 from historian import SessionMaker
 from .models import Instrument, Source, Rate, Tick, ImportJob, ImportJobChunk
+from ..provider import fetch_sources, fetch_instruments
 
 
 def insert_mt5_rates(rates):
@@ -10,9 +12,19 @@ def insert_mt5_rates(rates):
         session.commit()
 
 
+def insert_sources(sources):
+    with SessionMaker() as session:
+        session.execute(insert(Source)
+                        .values(sources)
+                        .on_conflict_do_nothing())
+        session.commit()
+
+
 def insert_instruments(instruments):
     with SessionMaker() as session:
-        session.bulk_save_objects(instruments)
+        session.execute(insert(Instrument)
+                        .values(instruments)
+                        .on_conflict_do_nothing())
         session.commit()
 
 
@@ -38,14 +50,18 @@ def get_mt5_ticks(instrument, from_date, to_date):
             .order_by(Tick.timestamp)
 
 
-def get_all_sources():
+def get_all_sources(force_update):
     with SessionMaker() as session:
+        if force_update:
+            insert_sources(fetch_sources())
         return session.query(Source).all()
 
 
-def get_all_instruments():
+def get_all_instruments(source_id, force_update):
     with SessionMaker() as session:
-        return session.query(Instrument).all()
+        if force_update:
+            insert_instruments(fetch_instruments(source_id))
+        return session.query(Instrument).where(source_id == source_id).all()
 
 
 def insert_job(instrument_id, timeframe, from_date, to_date):
