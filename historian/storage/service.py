@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from historian import SessionMaker
 from .models import Instrument, Source, Rate, Tick, ImportJob, ImportJobChunk
-from ..provider import fetch_sources, fetch_instruments
+from ..loader import fetch_sources, fetch_instruments
 
 
 def insert_mt5_rates(rates):
@@ -34,19 +34,19 @@ def insert_mt5_ticks(ticks):
         session.commit()
 
 
-def get_mt5_rates(instrument, from_date, to_date):
+def get_mt5_rates(instrument, start_time, end_time):
     with SessionMaker() as session:
         return session.query(Rate) \
             .where(Rate.instrument_id == instrument) \
-            .where(Rate.timestamp.between(from_date, to_date)) \
+            .where(Rate.timestamp.between(start_time, end_time)) \
             .order_by(Rate.timestamp)
 
 
-def get_mt5_ticks(instrument, from_date, to_date):
+def get_mt5_ticks(instrument, start_time, end_time):
     with SessionMaker() as session:
         return session.query(Tick) \
             .where(Tick.instrument_id == instrument) \
-            .where(Tick.timestamp.between(from_date, to_date)) \
+            .where(Tick.timestamp.between(start_time, end_time)) \
             .order_by(Tick.timestamp)
 
 
@@ -64,21 +64,19 @@ def get_all_instruments(source_id, force_update):
         return session.query(Instrument).where(source_id == source_id).all()
 
 
-def insert_job(instrument_id, timeframe, from_date, to_date):
-    ranges = pd.Series(pd.date_range(from_date, to_date, freq="1000T"))
-    range_pairs = list(zip(ranges[0::1], ranges[1::1]))
-
-    chunks = [ImportJobChunk(from_date=rp[0], to_date=rp[1], status="CREATED") for rp in range_pairs]
+def insert_job(instrument_id, instrument_type, start_time, end_time, chunks):
+    import_job_chunks = [ImportJobChunk(start_time=rp[0], end_time=rp[1], status="CREATED") for rp in chunks]
 
     job = ImportJob(
         instrument_id=instrument_id,
-        chunks=chunks,
-        timeframe=timeframe,
-        from_date=from_date,
-        to_date=to_date,
+        chunks=import_job_chunks,
+        timeframe=instrument_type,
+        start_time=start_time,
+        end_time=end_time,
         status="CREATED"
     )
 
     with SessionMaker() as session:
         session.add(job)
         session.commit()
+        return session.get(ImportJob, job.id)

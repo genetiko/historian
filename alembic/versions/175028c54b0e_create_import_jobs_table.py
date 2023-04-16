@@ -23,8 +23,8 @@ def upgrade() -> None:
         Column('id', Integer, primary_key=True),
         Column('instrument_id', Integer, ForeignKey('historian.instruments.id'), nullable=False),
         Column('timeframe', String(16), nullable=False),
-        Column('from_date', DateTime, nullable=False),
-        Column('to_date', DateTime, nullable=False),
+        Column('start_time', DateTime, nullable=False),
+        Column('end_time', DateTime, nullable=False),
         Column('status', String(64), nullable=False),
         schema=settings.db.schema
     )

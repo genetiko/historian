@@ -61,11 +61,11 @@ class ImportJob(Base):
     __tablename__ = "import_jobs"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    chunks: Mapped[List["ImportJobChunk"]] = relationship("ImportJobChunk", back_populates="import_job")
+    chunks: Mapped[List["ImportJobChunk"]] = relationship("ImportJobChunk", back_populates="import_job", lazy=False)
     instrument_id: Mapped[int] = mapped_column()
     timeframe: Mapped[str] = mapped_column()
-    from_date: Mapped[datetime] = mapped_column()
-    to_date: Mapped[datetime] = mapped_column()
+    start_time: Mapped[datetime] = mapped_column()
+    end_time: Mapped[datetime] = mapped_column()
     status: Mapped[str] = mapped_column()
 
 
@@ -75,8 +75,8 @@ class ImportJobChunk(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     import_job_id: Mapped[int] = mapped_column(ForeignKey("import_jobs.id"))
     import_job = relationship("ImportJob", back_populates="chunks")
-    from_date: Mapped[datetime] = mapped_column()
-    to_date: Mapped[datetime] = mapped_column()
+    start_time: Mapped[datetime] = mapped_column()
+    end_time: Mapped[datetime] = mapped_column()
     status: Mapped[str] = mapped_column()
 
 

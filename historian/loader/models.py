@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel
 
@@ -27,6 +28,21 @@ class RateModel(BaseModel):
     close: float
     volume: int
     spread: int
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+
+
+class ImportJobModel(BaseModel):
+    id: int
+    chunks: List
+    instrument_id: int
+    timeframe: str
+    start_time: datetime
+    end_time: datetime
+    status: str
 
     class Config:
         orm_mode = True

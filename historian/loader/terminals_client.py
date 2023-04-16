@@ -5,12 +5,12 @@ import httpx
 from historian import settings
 
 
-def fetch_import_chunks(instrument_id, instrument_type, start_date, end_date):
+def fetch_import_chunks(instrument_id, instrument_type, start_time, end_time):
     params = {
         "instrument_id": instrument_id,
         "instrument_type": instrument_type,
-        "start_date": start_date,
-        "end_date": end_date
+        "start_time": start_time,
+        "end_time": end_time
     }
     with httpx.Client(base_url=settings.terminals.baseUrl) as client:
         res = client.get("/chunks", params=params)
