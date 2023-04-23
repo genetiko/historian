@@ -5,6 +5,7 @@ from fastapi import APIRouter, Response, status
 
 from historian.storage import Tick, Rate, insert_mt5_ticks, insert_mt5_rates, get_mt5_rates, get_mt5_ticks, insert_job
 from .models import RateModel, TickModel, ImportJobModel
+from .service import submit_job
 from .terminals_client import fetch_import_chunks
 
 router = APIRouter()
@@ -21,9 +22,12 @@ async def get_ticks_history(instrument_id, start_time: datetime, end_time: datet
 
 
 @router.post("/history/{instrument_id}/prepare", tags=["History"], response_model=ImportJobModel)
-async def prepare_data(instrument_id: int, instrument_type: str, start_time: datetime, end_time: datetime):
-    chunks = fetch_import_chunks(instrument_id, instrument_type, start_time, end_time)
-    return insert_job(instrument_id, instrument_type, start_time, end_time, chunks)
+async def prepare_data(instrument_id: int, instrument_type: str, start_time: datetime, end_time: datetime,
+                       frequency: str = "H"):
+    chunks = fetch_import_chunks(instrument_id, instrument_type, start_time, end_time, frequency)
+    job = insert_job(instrument_id, instrument_type, start_time, end_time, chunks)
+    submit_job(job)
+    return job
 
 
 @router.post("/ticks", tags=["Test data endpoints"])

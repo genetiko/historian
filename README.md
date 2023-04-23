@@ -21,20 +21,23 @@ Run migrations
 alembic upgrade head
 ```
 
+### Queries
 
-### Metadata service API:
+```postgresql
+with sub as (select job.import_job_id as id,
+                    count(*)          as cnt
+             from import_job_chunks job
+             group by job.import_job_id)
+select job.id,
+       chunk.status,
+       round(count(*) / (select sum(cnt) from sub where sub.id = job.id) * 100, 2) as percent
+from import_jobs job
+         inner join import_job_chunks chunk on job.id = chunk.import_job_id
+group by job.id, chunk.status;
 
-split_period_into_chunks(instrument_id, instrument_type_id, start_date, end_date)
-возвращает список [(start_date, end_date), ...], по сути это длинный период, разбитый на маленькие кусочки, максимально возможные для возврата данных
 
-fetch_historical_data(instrument_id, instrument_type_id, date)
-возвращает байтовый поток gziped данных, с форматом пока не совсем понятно, но я подумаю сегодня
 
-fetch_sources
-возвращает список возможных источников
+SELECT pg_size_pretty(pg_total_relation_size('mt5_rates'));
 
-fetch_source_meta(source_id)
-возвращает метаинформацию по источнику данных + список айдишников поддерживаемых инструментов
-
-fetch_instrument_meta(instrument_id)
-возвращает метаинформацию по инструменту, в том числе со списком типов предоставляемых данных
+SELECT pg_size_pretty(pg_total_relation_size('mt5_ticks'));
+```

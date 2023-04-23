@@ -17,6 +17,7 @@ pydantic = "^1.10.6"
 uvicorn = "^0.21.0"
 pandas = "^1.5.3"
 httpx = "^0.23.3"
+loguru = "^0.7.0"
 
 [tool.poetry.group.dev.dependencies]
 httpx = "^0.23.3"

@@ -22,7 +22,7 @@ def upgrade() -> None:
         'import_jobs',
         Column('id', Integer, primary_key=True),
         Column('instrument_id', Integer, ForeignKey('historian.instruments.id'), nullable=False),
-        Column('timeframe', String(16), nullable=False),
+        Column('instrument_type', String(16), nullable=False),
         Column('start_time', DateTime, nullable=False),
         Column('end_time', DateTime, nullable=False),
         Column('status', String(64), nullable=False),

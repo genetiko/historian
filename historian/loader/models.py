@@ -39,7 +39,7 @@ class ImportJobModel(BaseModel):
     id: int
     chunks: List
     instrument_id: int
-    timeframe: str
+    instrument_type: str
     start_time: datetime
     end_time: datetime
     status: str

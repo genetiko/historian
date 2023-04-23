@@ -17,7 +17,7 @@ class Rate(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     timestamp: Mapped[datetime] = mapped_column()
     instrument_id: Mapped[int] = mapped_column(ForeignKey("instruments.id"))
-    period: Mapped[int] = mapped_column()
+    instrument_type: Mapped[str] = mapped_column()
     open: Mapped[float] = mapped_column()
     high: Mapped[float] = mapped_column()
     low: Mapped[float] = mapped_column()
@@ -61,9 +61,9 @@ class ImportJob(Base):
     __tablename__ = "import_jobs"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    chunks: Mapped[List["ImportJobChunk"]] = relationship("ImportJobChunk", back_populates="import_job", lazy=False)
+    chunks: Mapped[List["ImportJobChunk"]] = relationship("ImportJobChunk", lazy="selectin")
     instrument_id: Mapped[int] = mapped_column()
-    timeframe: Mapped[str] = mapped_column()
+    instrument_type: Mapped[str] = mapped_column()
     start_time: Mapped[datetime] = mapped_column()
     end_time: Mapped[datetime] = mapped_column()
     status: Mapped[str] = mapped_column()
@@ -74,7 +74,6 @@ class ImportJobChunk(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     import_job_id: Mapped[int] = mapped_column(ForeignKey("import_jobs.id"))
-    import_job = relationship("ImportJob", back_populates="chunks")
     start_time: Mapped[datetime] = mapped_column()
     end_time: Mapped[datetime] = mapped_column()
     status: Mapped[str] = mapped_column()
