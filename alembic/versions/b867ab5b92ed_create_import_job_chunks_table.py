@@ -22,8 +22,8 @@ def upgrade() -> None:
         'import_job_chunks',
         Column('id', Integer, primary_key=True),
         Column('import_job_id', Integer, ForeignKey('historian.import_jobs.id'), nullable=False),
-        Column('from_date', DateTime, nullable=False),
-        Column('to_date', DateTime, nullable=False),
+        Column('start_time', DateTime, nullable=False),
+        Column('end_time', DateTime, nullable=False),
         Column('finish_date', DateTime),
         Column('status', String, nullable=False),
         schema=settings.db.schema

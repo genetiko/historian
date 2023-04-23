@@ -6,7 +6,7 @@ Create Date: 2023-03-14 16:24:05.709434
 
 """
 from alembic import op
-from sqlalchemy import Integer, Float, Column, SmallInteger, DateTime
+from sqlalchemy import Integer, Float, Column, DateTime, String, UniqueConstraint
 
 from historian import settings
 
@@ -23,13 +23,14 @@ def upgrade() -> None:
         Column('id', Integer, primary_key=True),
         Column('timestamp', DateTime, nullable=False),
         Column('instrument_id', Integer, nullable=False),
-        Column('period', SmallInteger, nullable=False),
+        Column('instrument_type', String, nullable=False),
         Column('open', Float, nullable=False),
         Column('high', Float, nullable=False),
         Column('low', Float, nullable=False),
         Column('close', Float, nullable=False),
         Column('volume', Integer, nullable=False),
         Column('spread', Integer, nullable=False),
+        UniqueConstraint('timestamp', 'instrument_id', 'instrument_type', name='uc_mt5_rate'),
         schema=settings.db.schema
     )
 

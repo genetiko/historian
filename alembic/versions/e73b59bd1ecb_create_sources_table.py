@@ -22,6 +22,7 @@ def upgrade() -> None:
         'sources',
         Column('id', SmallInteger, primary_key=True),
         Column('name', String(256), nullable=False),
+        Column('server', String(256), nullable=False),
         UniqueConstraint('id', 'name', name='source'),
         schema=settings.db.schema
     )

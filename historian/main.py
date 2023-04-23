@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-from historian.loader.router import router as loader_router
-from historian.provider.router import router as provider_router
+from historian.loader import submit_pending_jobs
+from historian.loader import router as loader_router
+from historian.provider import router as provider_router
 
 app = FastAPI()
+submit_pending_jobs()
 
 
 @app.get('/')
